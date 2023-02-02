@@ -3,7 +3,7 @@ require('babel-polyfill');
 require('dotenv').config();
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const privateKeys = process.env.PRIVATE_KEYS || ""
+const privateKeys = process.env.VITE_PRIVATE_KEYS || ""
 
 module.exports = {
   networks: {
@@ -16,7 +16,7 @@ module.exports = {
       provider: function () {
         return new HDWalletProvider(
           privateKeys.split(','), // Array of account private keys
-          `${process.env.GOERLI_INFURA_URL}/v3/${process.env.INFURTA_API_KEY_WEB3}`// Url to an Ethereum Node
+          `${process.env.GOERLI_INFURA_URL}/v3/${process.env.VITE_INFURA_API_KEY_WEB3}`// Url to an Ethereum Node
         )
       },
       gas: 5000000,
