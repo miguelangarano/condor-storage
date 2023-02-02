@@ -22,13 +22,13 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.5",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "daisyui": "^2.50.0",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "ipfs-http-client": "^60.0.0",
-    "truffle-hdwallet-provider-privkey": "^0.3.0",
     "web3": "^1.8.2"
   }
 }
