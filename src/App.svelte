@@ -3,22 +3,26 @@
     import Storage from "./abis/Storage.json";
     import { create } from "ipfs-http-client";
     import Loader from "./lib/components/Loader.svelte";
+    import { toSvg } from "jdenticon";
     import FilesList from "./lib/components/FilesList.svelte";
+    import CondorBase from "./assets/condor-base.svg";
 
-    const projectId = process.env.INFURA_PROJECT_ID_IPFS;
-    const projectSecret = process.env.INFURA_API_KEY_IPFS;
-    const authorization = "Basic " + window.btoa(projectId + ":" + projectSecret);
+    const projectId = import.meta.env.VITE_INFURA_PROJECT_ID_IPFS;
+    const projectSecret = import.meta.env.VITE_INFURA_API_KEY_IPFS;
+    const authorization =
+        "Basic " + window.btoa(projectId + ":" + projectSecret);
 
     const ipfs = create({
-        url: `${process.env.INFURA_IPFS_URL}/api/v0`,
+        url: `${import.meta.env.VITE_INFURA_IPFS_URL}/api/v0`,
         headers: {
-            authorization
-        }
+            authorization,
+        },
     });
 
     const state = {
         loading: false,
         account: undefined,
+        accountSvg: undefined,
         storage: undefined,
         fileCount: 0,
         files: [],
@@ -26,11 +30,11 @@
             buffer: undefined,
             type: undefined,
             name: "",
-            description: ""
+            description: "",
         },
         fileId: undefined,
         fileError: undefined,
-        transactionHash: undefined
+        transactionHash: undefined,
     };
 
     async function init() {
@@ -53,6 +57,7 @@
         const web3 = window["web3"];
         const accounts = await web3.eth.getAccounts();
         state.account = accounts[0];
+        state.accountSvg = toSvg(state.account, 50);
 
         const networkId = await web3.eth.net.getId();
         const networkData = Storage.networks[networkId];
@@ -78,7 +83,7 @@
         }
     }
 
-    function onDescriptionChange(event){
+    function onDescriptionChange(event) {
         state.file.description = event.target.value;
     }
 
@@ -94,33 +99,39 @@
         };
     }
 
+    function cleanData() {
+        setTimeout(() => {
+            state.fileError = undefined;
+            state.fileId = undefined;
+            state.transactionHash = undefined;
+            loadBlockchainData();
+        }, 3000);
+    }
+
     function uploadFile() {
         state.loading = true;
         ipfs.add(state.file.buffer)
             .then((result) => {
                 state.fileId = result.path;
-                try{
-                    state.storage.methods
-                    .uploadFile(result.path, result.size, state.file.type, state.file.name, state.file.description)
-                    .send({from: state.account})
-                    .on('transactionHash', ((hash) => {
+                state.storage.methods
+                    .uploadFile(
+                        result.path,
+                        result.size,
+                        state.file.type,
+                        state.file.name,
+                        state.file.description
+                    )
+                    .send({ from: state.account })
+                    .on("transactionHash", (hash) => {
                         state.loading = false;
                         state.transactionHash = hash;
-                        setTimeout(()=> {
-                            state.file.buffer = undefined;
-                            state.file.description = "";
-                            state.file.name = "";
-                            state.file.type = undefined;
-                            state.fileError = undefined;
-                            state.fileId = undefined;
-                            state.transactionHash = undefined;
-                            loadBlockchainData();
-                        }, 3000)
-                    }))
-                }catch(error){
-                    state.loading = false;
-                    state.fileError = error;
-                }
+                        cleanData();
+                    })
+                    .on("error", function (error) {
+                        state.fileError = error.message;
+                        state.loading = false;
+                        cleanData();
+                    });
             })
             .catch((error) => {
                 state.loading = false;
@@ -131,9 +142,32 @@
     init();
 </script>
 
-<div class="flex w-full items-center mt-20 flex-col gap-10">
+<div class="flex w-full items-center mt-20 flex-col gap-10 relative">
+    <div class="flex fixed top-0 right-0 p-5 mt-5 w-full justify-between">
+        <div>
+            <img src={CondorBase} alt="" height="60px" width="60px" />
+        </div>
+        <div>
+            {#if state.accountSvg}
+                <div class="flex gap-5 items-center">
+                    {`...${state.account.slice(-15)}`}{@html state.accountSvg}
+                </div>
+            {:else}
+                <button class="btn bg-teal-600" on:click={init}>
+                    Connect
+                </button>
+            {/if}
+        </div>
+    </div>
+
     <span class="text-white text-2xl">Upload here your file</span>
-    <input type="text" placeholder="Type the file description" value={state.file.description} class="input w-full max-w-xs" on:change={onDescriptionChange} />
+    <input
+        type="text"
+        placeholder="Type the file description"
+        value={state.file.description}
+        class="input w-full max-w-xs"
+        on:change={onDescriptionChange}
+    />
     <input
         type="file"
         class="file-input w-full max-w-xs"
@@ -143,7 +177,10 @@
     <button
         class="btn bg-teal-600 btn-wide"
         on:click={uploadFile}
-        disabled={state.loading || state.file.buffer==undefined || state.file.description==""}
+        disabled={state.loading ||
+            state.file.buffer == undefined ||
+            state.file.description == "" ||
+            state.account == undefined}
     >
         <div class="flex items-center h-full gap-5">
             {#if state.loading}
@@ -156,7 +193,9 @@
     {#if state.fileId && state.transactionHash}
         <span
             >File uploaded successfully: <a
-                href={`${process.env.CONDOR_INFURA_IPFS_URL}/ipfs/${state.fileId}`}
+                href={`${import.meta.env.VITE_CONDOR_INFURA_IPFS_URL}/ipfs/${
+                    state.fileId
+                }`}
                 target="_blank"
                 rel="noreferrer">{state.fileId}</a
             ></span
@@ -167,7 +206,7 @@
         <span>File upload failed: {state.fileError}</span>
     {/if}
 
-    {#if state.files.length>=0}
+    {#if state.files.length >= 0}
         <FilesList files={state.files} />
     {/if}
 </div>
