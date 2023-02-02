@@ -6,8 +6,10 @@ Condor Storage is a web app that allows the users to store their files in IPFS a
 
 As this is development in progress app, you must install Truffle and Ganache in your computer.
 
+- You must fill all environment variables (there's a .env.example file which you can use as example to create a real .env file)
 - You must run Ganache
 - You must have a browser wallet with ETH
+- You must have a way to connect to a IPFS node like Infura
 - Just run "yarn" 
 - Then "truffle migrate --reset --config truffle-config.cjs"
 - And finally "yarn dev"
@@ -15,3 +17,12 @@ As this is development in progress app, you must install Truffle and Ganache in 
 This way you will be able to instsall dependencies, migrate the smart contracts and run the app.
 
 Happy File uploading :)
+
+## Deploy
+
+If you want to deploy this app you can add a new network configuration inside truffle-config.cjs file
+You can have a look of a deployed app here:
+
+This is already configured for using the Infura Goerli Testnet, but you can add whatever ETH testnet you want, you just have to update to valid credentials on the .env file for connecting to a ETH Testnet or ETH Mainnet through Infura or other service.
+
+You can also change the CONDOR_INFURA_IPFS_URL variable within .env for the name you want (obviously you will have to change the name inside the files this variable is being used) and it's value for connecting to your own IPFS dedicated gateway.

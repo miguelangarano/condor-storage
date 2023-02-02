@@ -5,12 +5,12 @@
     import Loader from "./lib/components/Loader.svelte";
     import FilesList from "./lib/components/FilesList.svelte";
 
-    const projectId = "2LAWhy9ydAsdo4Yg811heyFWJ62";
-    const projectSecret = "c356c621b36da52fd3bbbd55d5066c49";
+    const projectId = process.env.INFURA_PROJECT_ID_IPFS;
+    const projectSecret = process.env.INFURA_API_KEY_IPFS;
     const authorization = "Basic " + window.btoa(projectId + ":" + projectSecret);
 
     const ipfs = create({
-        url: "https://ipfs.infura.io:5001/api/v0",
+        url: `${process.env.INFURA_IPFS_URL}/api/v0`,
         headers: {
             authorization
         }
@@ -133,7 +133,7 @@
 
 <div class="flex w-full items-center mt-20 flex-col gap-10">
     <span class="text-white text-2xl">Upload here your file</span>
-    <input type="text" placeholder="Type here" value={state.file.description} class="input w-full max-w-xs" on:change={onDescriptionChange} />
+    <input type="text" placeholder="Type the file description" value={state.file.description} class="input w-full max-w-xs" on:change={onDescriptionChange} />
     <input
         type="file"
         class="file-input w-full max-w-xs"
@@ -156,7 +156,7 @@
     {#if state.fileId && state.transactionHash}
         <span
             >File uploaded successfully: <a
-                href="https://condor.infura-ipfs.io/ipfs/{state.fileId}"
+                href={`${process.env.CONDOR_INFURA_IPFS_URL}/ipfs/${state.fileId}`}
                 target="_blank"
                 rel="noreferrer">{state.fileId}</a
             ></span
