@@ -21,7 +21,7 @@ Happy File uploading :)
 ## Deploy
 
 If you want to deploy this app you can add a new network configuration inside truffle-config.cjs file
-You can have a look of a deployed app here:
+You can have a look of a deployed app here: [Condor File Storage Live App](https://main--tiny-dolphin-5ebbd0.netlify.app)
 
 This is already configured for using the Infura Goerli Testnet, but you can add whatever ETH testnet you want, you just have to update to valid credentials on the .env file for connecting to a ETH Testnet or ETH Mainnet through Infura or other service.
 
