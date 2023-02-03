@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.1.5",
+    "@walletconnect/sign-client": "^2.3.3",
+    "@web3modal/standalone": "^2.1.0",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "daisyui": "^2.50.0",

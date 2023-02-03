@@ -6,6 +6,8 @@
     import { toSvg } from "jdenticon";
     import FilesList from "./lib/components/FilesList.svelte";
     import CondorBase from "./assets/condor-base.svg";
+    import SignClient from "@walletconnect/sign-client";
+    import { Web3Modal } from "@web3modal/standalone";
 
     const projectId = import.meta.env.VITE_INFURA_PROJECT_ID_IPFS;
     const projectSecret = import.meta.env.VITE_INFURA_API_KEY_IPFS;
@@ -50,6 +52,35 @@
             window["web3"] = new Web3(window["web3"].currentProvider);
         } else {
             window.alert("Non-ethereum browser detected.");
+            startWalletConnectProcess();
+        }
+    }
+
+    async function startWalletConnectProcess() {
+        const web3Modal = new Web3Modal({
+            projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+            standaloneChains: ["eip155:5"],
+        });
+        const signClient = await SignClient.init({
+            projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+        });
+        const { uri, approval } = await signClient.connect({
+            requiredNamespaces: {
+                eip155: {
+                    methods: ["eth_sign"],
+                    chains: ["eip155:5"],
+                    events: ["accountsChanged"],
+                },
+            },
+        });
+
+        if (uri) {
+            console.log("URI::", uri)
+            web3Modal.openModal({ uri, standaloneChains: ["eip155:5"] });
+            console.log("WAITING APPROVAL::")
+            await approval();
+            console.log("APPROVED::")
+            web3Modal.closeModal();
         }
     }
 
@@ -138,19 +169,19 @@
                 state.fileError = error;
             });
     }
-
-    init();
 </script>
 
 <div class="flex w-full items-center mt-20 flex-col gap-10 relative">
-    <div class="flex fixed top-0 right-0 p-5 mt-5 w-full justify-between">
+    <div
+        class="appbar flex fixed top-0 right-0 p-2 w-full justify-between drop-shadow-lg"
+    >
         <div>
             <img src={CondorBase} alt="" height="60px" width="60px" />
         </div>
         <div>
             {#if state.accountSvg}
                 <div class="flex gap-5 items-center">
-                    {`...${state.account.slice(-15)}`}{@html state.accountSvg}
+                    {`...${state.account.slice(-10)}`}{@html state.accountSvg}
                 </div>
             {:else}
                 <button class="btn bg-teal-600" on:click={init}>
