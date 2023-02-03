@@ -1,6 +1,6 @@
-# Condor Storage
+# Condor File Storage
 
-Condor Storage is a web app that allows the users to store their files in IPFS and creating a smart contract that saves in the Ethereum blockchain the metadata of the uploaded file and bounds it to a wallet through a smart contract created with Solidity.
+Condor File Storage is a web app that allows the users to store their files in IPFS and creating a smart contract that saves in the Ethereum blockchain the metadata of the uploaded file and bounds it to a wallet through a smart contract created with Solidity.
 
 ## Setup
 
