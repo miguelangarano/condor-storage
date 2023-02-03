@@ -26,3 +26,9 @@ You can have a look of a deployed app here: [Condor File Storage Live App](https
 This is already configured for using the Infura Goerli Testnet, but you can add whatever ETH testnet you want, you just have to update to valid credentials on the .env file for connecting to a ETH Testnet or ETH Mainnet through Infura or other service.
 
 You can also change the CONDOR_INFURA_IPFS_URL variable within .env for the name you want (obviously you will have to change the name inside the files this variable is being used) and it's value for connecting to your own IPFS dedicated gateway.
+
+## Using the live version
+
+For using the live version the only thing you need is accessing from a Ethereum compatible browser or having a wallet like metamask as a browser plugin.
+- You must set the [Goerli testnet](https://goerli.net/) in your wallet
+- And for getting ETH go to [Goerli Faucet](https://goerlifaucet.com/), register and put your wallet address to get your testnet ETH.
