@@ -30,5 +30,5 @@ You can also change the CONDOR_INFURA_IPFS_URL variable within .env for the name
 ## Using the live version
 
 For using the live version the only thing you need is accessing from a Ethereum compatible browser or having a wallet like metamask as a browser plugin.
-- You must set the [Goerli testnet](https://goerli.net/) in your wallet
+- You must set the [Goerli testnet](https://goerli.net/) in your wallet ([Goerli settings](https://chainlist.org/chain/5))
 - And for getting ETH go to [Goerli Faucet](https://goerlifaucet.com/), register and put your wallet address to get your testnet ETH.
